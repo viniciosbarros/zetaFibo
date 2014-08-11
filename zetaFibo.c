@@ -12,12 +12,14 @@
 #define BASE  10
 #define ESPERTO
 
+
 int vector[100];
 int vector_final[100];
 int vector_indice[100];
-
+int c, first = 0, last = 1;
 
 int fibonacci(int n);
+int fibonacci_loop(int n);
 
 
 int main(int argc, char *argv[])
@@ -27,6 +29,7 @@ int main(int argc, char *argv[])
   ret, i, j = 0, last_value,
   num_rec = -1;
   struct timeval tv1,tv2;
+
 
   // primeiros termos da serie
   vector[0]=0;
@@ -42,11 +45,17 @@ int main(int argc, char *argv[])
 
   gettimeofday(&tv1, NULL);
 
+#ifndef LOOP_ONLY
   while(ret < limit){
     num_rec++;
     vector[num_rec] = fibonacci(num_rec);
     ret =+ vector[num_rec];
   }
+#endif
+
+#ifdef LOOP_ONLY
+  num_rec = fibonacci_loop(limit);
+#endif
 
   gettimeofday(&tv2, NULL);
 
@@ -84,6 +93,25 @@ int main(int argc, char *argv[])
 
     printf("\n");
     return 0;
+}
+
+int fibonacci_loop(n){
+  c=0;
+  vector[c] = c;
+
+  while(vector[c] <= n){
+      c++;
+      if ( c <= 1 ){
+         vector[c] = c;
+       }
+      else
+      {
+        vector[c] = first + last;
+        first = last;
+        last = vector[c];
+      }
+  }
+  return c;
 }
 
 #ifdef ESPERTO
