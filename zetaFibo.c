@@ -10,7 +10,6 @@
 #include <sys/time.h>
 
 #define BASE  10
-#define ESPERTO
 
 
 int vector[100];
@@ -28,7 +27,7 @@ int main(int argc, char *argv[])
   long limit,
   ret, i, j = 0, last_value,
   num_rec = -1;
-  struct timeval tv1,tv2;
+  struct timeval tv1,tv2, tv3, tv4;
 
 
   // primeiros termos da serie
@@ -44,6 +43,7 @@ int main(int argc, char *argv[])
   limit = strtol(argv[1], NULL ,BASE);
 
   gettimeofday(&tv1, NULL);
+  gettimeofday(&tv3, NULL);
 
 #ifndef LOOP_ONLY
   while(ret < limit){
@@ -58,12 +58,6 @@ int main(int argc, char *argv[])
 #endif
 
   gettimeofday(&tv2, NULL);
-
-  printf ("Total time = %f seconds\n",
-   (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
-   (double) (tv2.tv_sec - tv1.tv_sec));
-
-  gettimeofday(&tv1, NULL);
 
   vector_final[j] = vector[num_rec-1];
   vector_indice[j] = num_rec-1;
@@ -82,14 +76,19 @@ int main(int argc, char *argv[])
     }
   }
 
-  gettimeofday(&tv2, NULL);
+  gettimeofday(&tv4, NULL);
+
+  printf ("Fb time = %f seconds\n",
+   (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
+   (double) (tv2.tv_sec - tv1.tv_sec));
+
   printf ("Total time = %f seconds\n",
-    (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
-    (double) (tv2.tv_sec - tv1.tv_sec));
+    (double) (tv4.tv_usec - tv3.tv_usec) / 1000000 +
+    (double) (tv4.tv_sec - tv3.tv_sec));
 
 
   for (i = 0; i < j; i++)
-    printf("\nzf(%d)= %d ", vector_indice[i], vector_final[i]);
+    printf("\nFb(%d)= %d ", vector_indice[i], vector_final[i]);
 
     printf("\n");
     return 0;
