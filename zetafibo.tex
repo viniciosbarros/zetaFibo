@@ -1,0 +1,302 @@
+%
+%
+%	Vinicios Barros - 2013
+%	Template simples pra escrita rápida em portugues
+%
+%
+%
+
+\documentclass[10pt,a4paper]{article}
+	\usepackage[brazil]{babel} % em portugues brasileiro
+	\usepackage[utf8]{inputenc}
+	\usepackage[T1]{fontenc}
+	\usepackage{tgschola}
+	\usepackage{fancyvrb}
+	\usepackage{graphicx}
+	\usepackage{tabularx}
+	\usepackage[usenames,dvipsnames]{color}
+
+\begin{document}
+
+{\centering{}
+\section*{\huge{Treinamento Modulo de Software}}
+Vinicios Barros \\
+}
+
+\section*{1}
+
+{\raggedright{}	 %  Right justified
+
+	\paragraph{}
+	O desafio proposto pode ser resolvido em linguagem C
+	cumprindo o requisito de ser uma solução para 
+	Zeta-Fibonacci (ZF), ou seja, encontrar	a série cujo 
+	resultado da soma seja o valor de entrada.
+	A função ZF deve receber como entrada um valor inteiro
+	de 0 a até pelo menos 1000000000 (1 Bilhão), e encontrar
+	uma série que seja um subdominio da série de Fibonacci,
+	a soma dessa série deve ser o valor solicitado na 
+	entrada do programa.\\
+	Por exemplo:\\
+\begin{Verbatim}[frame=single,
+			framesep=3mm,
+			xrightmargin=2cm]
+	ZF(5) = Fb(4) + Fb(3)
+	Fb(4) = 3
+	Fb(3) = 2
+\end{Verbatim}
+	\paragraph{} 
+	Tendo esse desafio em vista já sabemos que iremos precisar
+	de um algoritmo para a série de Fibonacci que seja
+	implementado em C. O Algoritmo mais largamente utilizada 
+	para implementar a função de Fibonacci é dado por uma 
+	repetição recursiva para ``n'' elementos da série. 
+	De forma geral a solução seria: \\
+
+
+\begin{Verbatim}[frame=single,
+			framesep=3mm,
+			xrightmargin=2cm]
+
+	fibonacci(n)
+	retorna fibonacci(n-2) + fibonacci(n-1)
+
+\end{Verbatim}
+}
+
+{\raggedleft{}
+{
+	\it{*desconsidera os dois primeiros termos}
+}
+
+{\raggedright{}
+
+	\paragraph{}
+	Utilizando esse algoritmo em algumas execuções podemos notar que 
+	gastasse muito tempo para executar a função de Fibonacci (Fb) para
+	valores mais altos. Pois a cada execução de Fb ele precisa
+	recalcular os mesmos valores da série. Quanto mais alto o 
+	valor, mais vezes essa função sera executada. 
+	Ou seja, essa solução é muito lenta para nossa necessidade.	
+	A idéia para implementar uma solução otimizada para o problema 
+	é aplicar programação dinâmica. Através do uso de
+	programação dinâmica é possivel evitar o recálculo da série
+	de Fibonacci, certo de que a solução final para nosso problema é uma
+	sobreposição de subproblemas resolvidos por recurções da função de
+	Fibonacci. A solução prévia garante a resolução	de parte do problema.
+	Os subproblemas então se sobrepoem e podem compor a solução final. 
+	Logo, tendo em mente que a solução é composta por várias recurções
+	da função que encontra a série, e que essa função pode ser 
+	recursivamente implementada, a sequencia não precisa ser calculada 
+	todas as vezes. Para uma certa entrada o valor
+	da série será encontrado, e esse será armazenado em uma estrutura
+	de dados para posterior acesso.
+
+% Note the 'Verbatin' case sensitiveness and not 'verbatin'
+% this uses the fancyvrb package to draw a box around text
+\begin{Verbatim}[frame=single,
+				framesep=3mm,
+				numbers=left,
+				xrightmargin=2cm]
+fibonacci(n)
+{
+	int fib;
+	if (n == 0)
+		return vector[0];
+	else {
+		fib = vector[n];
+		if (fib == 0)
+			fib = fibonacci(n - 2) 
+			    + fibonacci(n - 1);
+		vector[n] = fib;
+	}
+	return fib;
+}
+\end{Verbatim}
+
+	\paragraph{}Podemos notar que essa mudança já desempenha um papel 
+	significativo no tempo de execução para encontrar os 
+	valores, pois essa função sera executada ``n'' vezes também, 
+	o objetivo é encontrar uma soma, e não somente o 
+	resultado da série.
+
+	\paragraph{}Uma maneira como podemos aumentar o desempenho na busca
+	pela soma, é no uso de heurísca. Podemos avaliar olhando 
+	para a solução que a soma para o valor de entrada, pode ser quantificado
+	de forma a manter uma proximidade maior do máximo valor da série que seja menor
+	que a entrada, e a partir desse valor, seja feito a busca pelos valores
+	menores que podem compor o resultado. A busca iniciaria nos maiores valores
+	da série e percorreria os valores de forma decrescente.
+	Isso limita a discrepância de uma busca	em profundidade que levaria 
+	a uma quantidade maior de combinações mas aumentaria significativamente
+	o tempo de execução da busca. O algoritmo tenta trabalhar 
+	com a idéia de heuristica aproximativa, pois fornece a solução
+	dentro de um limite de qualidade absoluto. 
+	Ainda para enquadrar melhor nosso método, podemos
+	dizer que se trata de uma metaheurística, pois o procedimento aplicado
+	visa explorar a instância do problema e seu espaço de solução.
+
+\newpage
+
+	\paragraph{} A explicação fica melhor com um exemplo. Caso a entrada
+	seja o valor 15, poderiamos calcular a série somente até 15, ou caso
+	ele não pertença a série, somente até o próximo valor maior que 15.
+	A condição de parada tornasse o valor de entrada ou o próximo valor
+	maior que ele.
+	
+	\begin{Verbatim}[frame=single,
+				framesep=3mm,
+				xrightmargin=7cm]
+  0 1 1 2 3 5 8 13 21
+\end{Verbatim}
+
+	\paragraph{} 15 não pertence a série, pois chegamos ao valor 21
+	logo após o 13, sendo esse último, o número a partir do qual iniciamos
+	as buscas pela soma. E de forma recursiva tentamos encontrar a soma ideal
+	ou composições da mesma através da verificação se ainda é possivel adicionarmos
+	um novo valor da série a soma. Se essa soma ultrapasa 15 esse valor da série
+	é descartado e a busca continua.
+
+
+{\raggedright{}
+	\paragraph{}A saída do programa deve ser:
+
+		\begin{Verbatim}[frame=single,
+				framesep=3mm,
+				xrightmargin=8cm]
+Fb(7)= 13 
+Fb(3)= 2 
+\end{Verbatim}
+	
+	\paragraph{}Onde qualquer valor entre 13 e 2, não satisfaz a soma por fornecer
+	um resultado superior a 15.
+
+	\paragraph{}Para análisarmos o tempo de execução do programa vamos fazer um teste com 
+	o valor ``100000000'' como entrada, o programa efetuará a busca pelos valores da série
+	que somados chegem a esse valor, e imprimira a Fb correspondente de cada elemento 
+	que compoem a soma. O programa permite a execução de duas formas diferentes de efetuar
+	essa busca. Uma utilizando programação dinâmica e a outra não.
+
+\newpage
+	\paragraph{}saida sem programação dinâmica:
+	\begin{Verbatim}[frame=single,
+				framesep=3mm,
+				xrightmargin=3cm]
+Total Fb time = 5.436326 seconds
+Total time = 5.436327 seconds
+
+Fb(39)= 63245986 
+Fb(37)= 24157817 
+Fb(35)= 9227465 
+Fb(32)= 2178309 
+Fb(30)= 832040 
+Fb(28)= 317811 
+Fb(23)= 28657 
+Fb(21)= 10946 
+Fb(15)= 610 
+Fb(13)= 233 
+Fb(11)= 89 
+Fb(9)= 34 
+Fb(4)= 3 
+Fb(0)= 0
+\end{Verbatim}
+
+}
+
+	\paragraph{}saida com programação dinâmica:
+	\begin{Verbatim}[frame=single,
+				framesep=3mm,
+				xrightmargin=3cm]
+./zetaFiboRecursive 100000000
+Total Fb time = 0.000002 seconds
+Total time = 0.000003 seconds
+
+Fb(39)= 63245986 
+Fb(37)= 24157817 
+Fb(35)= 9227465 
+Fb(32)= 2178309 
+Fb(30)= 832040 
+Fb(28)= 317811 
+Fb(23)= 28657 
+Fb(21)= 10946 
+Fb(15)= 610 
+Fb(13)= 233 
+Fb(11)= 89 
+Fb(9)= 34 
+Fb(4)= 3 
+Fb(0)= 0 
+\end{Verbatim}
+
+	\paragraph{} Podemos ver que a diferença de tempo de execução do programa
+	para esse mesmo valor varia muito, pois sem o uso de programação dinâmica
+	a execução pode levar quase 6 segundos, enquanto utilizando mais estrategias,
+	melhor heuristica e com o foco no desempenho, nosso programa executa em
+	milésimos de segundo. 
+
+	\paragraph{}A próxima saída é só mais uma curiosidade sobre a solução, onde
+	além da programação dinâmica, o programa deve apresentar um ganho 
+	de desempenho por não utilizar chamadas recursivas da função Fb, a solução aqui
+	é o uso somente de iteração ``for''.
+
+
+\paragraph{}saida com programação dinâmica e busca de Fibonacci baseada em ``for loop'':
+	\begin{Verbatim}[frame=single,
+				framesep=3mm,
+				xrightmargin=3cm]
+./zetaFiboNonRecursive 100000000
+Fb time = 0.000001 seconds
+Total time = 0.000002 seconds
+
+Fb(45)= 1134903170 
+Fb(39)= 63245986 
+Fb(36)= 14930352 
+Fb(32)= 2178309 
+Fb(28)= 317811 
+Fb(26)= 121393 
+Fb(24)= 46368 
+Fb(20)= 6765 
+Fb(17)= 1597 
+Fb(14)= 377 
+Fb(10)= 55 
+Fb(6)= 8 
+Fb(2)= 1 
+Fb(0)= 0 
+\end{Verbatim}
+	
+	\paragraph{}
+	A terceira saida do programa mostra uma versão
+	onde o algoritmo de Fibonacci não utiliza chamadas recursivas de si mesmo,
+	a solução é feita através de uma recursão for loop e isso torna o desempenho
+	ainda melhor, apesar de ser praticamente imperceptivel, pois o maior
+	mérito esta no uso de programação dinâmica e heurística.
+
+	\paragraph{} Como conclusão podemos dizer que programação dinâmica
+	pode ser utilizado em situações onde o resultado prévio não muda, onde
+	esse resultado é conhecido e definido. Por isso pode ser encontrado
+	e utilizado para cada aplicação que tenhamos necessidade. Heurísticas 
+	são essenciais para resolver problemas cujos domínios da função são 
+	difíceis ou pouco compreendidos. Em um problema onde não se conhece
+	qual o melhor caminho para solução, definesse uma função heurística
+	que acreditasse levar a essa solução. As regras são baseadas nas
+	experiências anteriores, e substituem as buscas algoritmas que encontram
+	a solução correta combinando todas as soluções possíveis.
+	Heurísticas exigem menos tempo de execução e se aproximam mais
+	da maneira como o ser humano raciocina e chega a resolução do problema.
+	Essas técnicas devem ser mais estudadas para serem melhor aplicadas 
+	e possamos alcançar o nível de desempenho desejado por nossos 
+	programas. Devemos sempre buscar métodos para as mais distintas 
+	e diversas aplicações garantindo soluções eficientes e confiáveis.
+
+}
+}
+
+{\raggedright{}	
+{
+\section*{2}
+	
+	Referências: \\
+	\begin{verbatim}
+	[1] 
+	\end{verbatim}
+}
+\end{document}
